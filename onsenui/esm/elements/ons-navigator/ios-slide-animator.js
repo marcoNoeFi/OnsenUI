@@ -116,9 +116,17 @@ export default class IOSSlideNavigatorAnimator extends IOSSwipeNavigatorAnimator
       const leavePageTarget = util.findToolbarPage(leavePage) || leavePage;
       const enterPageDecomposition = this._decompose(enterPageTarget);
       const leavePageDecomposition = this._decompose(leavePageTarget);
+      
+      const isRTL = (document.getElementsByTagName('html')[0].dir == 'rtl')?true:false;
 
       const delta = this._calculateDelta(leavePage, enterPageDecomposition);
-
+      
+      const enterPageTranslate = (isRTL)?'-100%':'100%';
+      const toolbarTranslate = (isRTL)?'-125%':'125%';
+      const leavePageTranslate = (isRTL)?'25%':'-25%';
+      const enterPageDelta = (isRTL)?('-'+delta.title+'px'):(delta.title+'px');
+      const leavePageDelta = (isRTL)?(delta.title+'px'):('-'+delta.title+'px');
+      
       const shouldAnimateToolbar = this._shouldAnimateToolbar(enterPageTarget, leavePageTarget);
 
       if (shouldAnimateToolbar) {
@@ -127,7 +135,7 @@ export default class IOSSlideNavigatorAnimator extends IOSSwipeNavigatorAnimator
 
           animit([enterPageDecomposition.content, enterPageDecomposition.bottomToolbar, enterPageDecomposition.background], this.def)
             .default(
-              { transform: translate3d('100%') },
+              { transform: translate3d(enterPageTranslate) },
               { transform: translate3d() }
             ),
 
@@ -136,13 +144,13 @@ export default class IOSSlideNavigatorAnimator extends IOSSwipeNavigatorAnimator
 
           animit(enterPageDecomposition.toolbarCenter, this.def)
             .default(
-              { transform: translate3d('125%'), opacity: 1 },
+              { transform: translate3d(toolbarTranslate), opacity: 1 },
               { transform: translate3d(), opacity: 1 }
             ),
 
           animit(enterPageDecomposition.backButtonLabel, this.def)
             .default(
-              { transform: translate3d(`${delta.title}px`), opacity: 0 },
+              { transform: translate3d(enterPageDelta), opacity: 0 },
               {
                 transform: translate3d(),
                 opacity: 1,
@@ -159,7 +167,7 @@ export default class IOSSlideNavigatorAnimator extends IOSSwipeNavigatorAnimator
           animit([leavePageDecomposition.content, leavePageDecomposition.bottomToolbar, leavePageDecomposition.background], this.def)
             .default(
               { transform: translate3d(), opacity: 1 },
-              { transform: translate3d('-25%'), opacity: 0.9 }
+              { transform: translate3d(leavePageTranslate), opacity: 0.9 }
             )
             .queue(done => {
               this.backgroundMask.remove();
@@ -172,7 +180,7 @@ export default class IOSSlideNavigatorAnimator extends IOSSwipeNavigatorAnimator
             .default(
               { transform: translate3d(), opacity: 1 },
               {
-                transform: translate3d(`-${delta.title}px`),
+                transform: translate3d(leavePageDelta),
                 opacity: 0,
                 transition: `opacity ${this.duration}s linear, transform ${this.duration}s ${this.timing}`
               }
@@ -181,7 +189,7 @@ export default class IOSSlideNavigatorAnimator extends IOSSwipeNavigatorAnimator
           animit(leavePageDecomposition.backButtonLabel, this.def)
             .default(
               { transform: translate3d(), opacity: 1 },
-              { transform: translate3d(`-${delta.label}px`), opacity: 0 }
+              { transform: translate3d(leavePageDelta), opacity: 0 }
             ),
 
           animit(leavePageDecomposition.other, this.def)
@@ -194,10 +202,10 @@ export default class IOSSlideNavigatorAnimator extends IOSSwipeNavigatorAnimator
         animit.runAll(
 
           animit(enterPage, this.def)
-            .default( { transform: translate3d('100%'), }, { transform: translate3d() }),
+            .default( { transform: translate3d(enterPageTranslate), }, { transform: translate3d() }),
 
           animit(leavePage, this.def)
-            .default( { transform: translate3d(), opacity: 1 }, { transform: translate3d('-25%'), opacity: .9 })
+            .default( { transform: translate3d(), opacity: 1 }, { transform: translate3d(leavePageTranslate), opacity: .9 })
             .queue(done => {
               this.backgroundMask.remove();
               unblock();
@@ -230,7 +238,17 @@ export default class IOSSlideNavigatorAnimator extends IOSSwipeNavigatorAnimator
     const enterPageDecomposition = this._decompose(enterPageTarget);
     const leavePageDecomposition = this._decompose(leavePageTarget);
 
+    
+    
+    const isRTL = (document.getElementsByTagName('html')[0].dir == 'rtl')?true:false;
+
     const delta = this._calculateDelta(leavePage, leavePageDecomposition);
+      
+    const enterPageTranslate = (isRTL)?'25%':'-25%';
+    const toolbarTranslate = (isRTL)?'-125%':'125%';
+    const leavePageTranslate = (isRTL)?'-100%':'100%';
+    const enterPageDelta = (isRTL)?(delta.title+'px'):('-'+delta.title+'px');
+    const leavePageDelta = (isRTL)?('-'+delta.title+'px'):(delta.title+'px');
 
     const shouldAnimateToolbar = this._shouldAnimateToolbar(enterPageTarget, leavePageTarget);
 
@@ -239,13 +257,13 @@ export default class IOSSlideNavigatorAnimator extends IOSSwipeNavigatorAnimator
 
         animit([enterPageDecomposition.content, enterPageDecomposition.bottomToolbar, enterPageDecomposition.background], this.def)
           .default(
-            { transform: translate3d('-25%'), opacity: .9 },
+            { transform: translate3d(enterPageTranslate), opacity: .9 },
             { transform: translate3d(), opacity: 1 }
           ),
 
         animit(enterPageDecomposition.toolbarCenter, this.def)
           .default(
-            { transform: translate3d(`-${delta.title}px`), opacity: 0 },
+            { transform: translate3d(enterPageDelta), opacity: 0 },
             {
               transform: translate3d(),
               opacity: 1,
@@ -255,7 +273,7 @@ export default class IOSSlideNavigatorAnimator extends IOSSwipeNavigatorAnimator
 
         animit(enterPageDecomposition.backButtonLabel, this.def)
           .default(
-            { transform: translate3d(`-${delta.label}px`) },
+            { transform: translate3d(enterPageDelta) },
             { transform: translate3d() }
           ),
 
@@ -268,7 +286,7 @@ export default class IOSSlideNavigatorAnimator extends IOSSwipeNavigatorAnimator
         animit([leavePageDecomposition.content, leavePageDecomposition.bottomToolbar, leavePageDecomposition.background], this.def)
           .default(
             { transform: translate3d() },
-            { transform: translate3d('100%') }
+            { transform: translate3d(leavePageTranslate) }
           )
           .wait(0)
           .queue(done => {
@@ -287,14 +305,14 @@ export default class IOSSlideNavigatorAnimator extends IOSSwipeNavigatorAnimator
         animit(leavePageDecomposition.toolbarCenter, this.def)
           .default(
             { transform: translate3d() },
-            { transform: translate3d('125%') }
+            { transform: translate3d(toolbarTranslate) }
           ),
 
         animit(leavePageDecomposition.backButtonLabel, this.def)
           .default(
             { transform: translate3d(), opacity: 1 },
             {
-              transform: translate3d(`${delta.title}px`),
+              transform: translate3d(leavePageDelta),
               opacity: 0,
               transition: `opacity ${this.duration}s linear, transform ${this.duration}s ${this.timing}`
             }
@@ -305,14 +323,14 @@ export default class IOSSlideNavigatorAnimator extends IOSSwipeNavigatorAnimator
 
         animit(enterPage, this.def)
           .default(
-            { transform: translate3d('-25%'), opacity: .9 },
+            { transform: translate3d(enterPageTranslate), opacity: .9 },
             { transform: translate3d(), opacity: 1 }
           ),
 
         animit(leavePage, this.def)
           .default(
             { transform: translate3d() },
-            { transform: translate3d('100%') }
+            { transform: translate3d(leavePageTranslate) }
           )
           .queue(done => {
             this.backgroundMask.remove();
